@@ -1,48 +1,23 @@
 package org.example;
+
 import org.testng.annotations.Test;
+
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
 public class TreinamentoRestAssured {
     @Test
-    public void cadastrarPet() {
-
-
-        given().
-            baseUri("http://petstore.swagger.io/v2").
-                basePath("//store/order")
-                //.body(pet)
-                .when()
-                .post("")
-                .then()
-                .statusCode(200)
-                .body("id", not(emptyString()));
-    }
-    @Test
-    public void atualizarPet() {
-        given().
-                baseUri("http://petstore.swagger.io/v2").
-                basePath("/pet/").
-                pathParam("petId", "9223372036854774884").
-                when().
-                put().
-                then()
-                .statusCode(200)
-                .body("id", not(emptyString()));
-    }
-
-    @Test
     public void pesquisarPetPorId() {
-        given().
-                baseUri("http://petstore.swagger.io/v2").
-                basePath("/pet/{petId}").
-                pathParam("petId", 1).
-        when().
-                get().
+        given()
+                .baseUri("http://petstore.swagger.io/v2")
+                .basePath("/pet/{petId}")
+                .header("content-type","aplication/json")
+                .pathParam("petId", 1);
+        when()
+                .get().
         then().
                 statusCode(200)
                 .body("id", not(emptyString()));
-
     }
 
     @Test
@@ -73,12 +48,48 @@ public class TreinamentoRestAssured {
 
     @Test
     public void cadastrarPetMetodoNaoPermitido() {
+        given()
+                .baseUri("http://petstore.swagger.io/v2")
+                .basePath("/pet")
+                .header("content-type","aplication/json");
+        when().
+                head().
+        then()
+                .statusCode(405);
+    }
+
+    @Test
+    public void cadastrarpedidoPet() {
+        Pet pet = new Pet();
+        pet.setId(643342);
+        pet.setPetId(64354);
+        pet.setQuantity(1);
+        pet.setShipDate("2023-04-11T16:41:03.623Z");
+        pet.setStatus("available");
+        pet.setComplete(true);
+
+        given()
+                .baseUri("http://petstore.swagger.io/v2")
+                .basePath("//store/order")
+                .header("content-type","aplication/json")
+                .body(pet);
+        when()
+                .post()
+        .then()
+                .statusCode(200)
+                .body("id", not(emptyString()));
+    }
+
+    @Test
+    public void atualizarPet() {
         given().
                 baseUri("http://petstore.swagger.io/v2").
-                basePath("/pet").
+                basePath("/pet/").
+                pathParam("petId", "9223372036854774884").
                 when().
-                head().
+                put().
                 then()
-                .statusCode(405);
+                .statusCode(200)
+                .body("id", not(emptyString()));
     }
 }

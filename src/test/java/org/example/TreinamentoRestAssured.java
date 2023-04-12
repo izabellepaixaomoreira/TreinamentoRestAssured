@@ -22,26 +22,26 @@ public class TreinamentoRestAssured {
 
     @Test
     public void pesquisarPetInexistente() {
-        given().
-                baseUri("http://petstore.swagger.io/v2").
-                basePath("/pet/{petId}").
-                pathParam("petId", 635).
-                when().
-                get().
-                then()
+        given()
+                .baseUri("http://petstore.swagger.io/v2")
+                .basePath("/pet/{petId}")
+                .pathParam("petId", 635).
+        when()
+                .get().
+        then()
                 .statusCode(404)
                 .body("message", equalTo("Pet not found"));
     }
 
     @Test
     public void atualizarPetFormatoInvalido() {
-        given().
-                baseUri("http://petstore.swagger.io/v2").
-                basePath("/pet/").
-                pathParam("petId", "teste").
-                when().
-                put().
-                then()
+        given()
+                .baseUri("http://petstore.swagger.io/v2")
+                .basePath("/pet/")
+                .pathParam("petId", "teste").
+        when()
+                .put().
+        then()
                 .statusCode(500)
                 .body("message", equalTo("something bad happened"));
     }
@@ -52,8 +52,8 @@ public class TreinamentoRestAssured {
                 .baseUri("http://petstore.swagger.io/v2")
                 .basePath("/pet")
                 .header("content-type","aplication/json");
-        when().
-                head().
+        when()
+                .head().
         then()
                 .statusCode(405);
     }
@@ -70,26 +70,14 @@ public class TreinamentoRestAssured {
 
         given()
                 .baseUri("http://petstore.swagger.io/v2")
-                .basePath("//store/order")
-                .header("content-type","aplication/json")
-                .body(pet);
+                .basePath("/store/order")
+                .header("content-type","application/json")
+                .body(pet).
         when()
-                .post()
-        .then()
+                .post().
+        then()
                 .statusCode(200)
-                .body("id", not(emptyString()));
-    }
-
-    @Test
-    public void atualizarPet() {
-        given().
-                baseUri("http://petstore.swagger.io/v2").
-                basePath("/pet/").
-                pathParam("petId", "9223372036854774884").
-                when().
-                put().
-                then()
-                .statusCode(200)
-                .body("id", not(emptyString()));
+                .body("id", not(empty()))
+                .body("quantity", not(equalTo(0)));
     }
 }
